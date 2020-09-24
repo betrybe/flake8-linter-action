@@ -2,6 +2,7 @@ import sys
 from github import Github
 import os
 
+
 def format_feedback(flake8_report):
     flake8_report = open(flake8_report, 'r')
     lines = flake8_report.readlines()

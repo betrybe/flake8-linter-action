@@ -3,7 +3,7 @@ import tempfile
 import pytest
 from unittest.mock import MagicMock
 from src import main
-from github.GithubException import BadCredentialsException, UnknownObjectException
+from github.GithubException import UnknownObjectException
 from github import Github, Repository, PullRequest
 
 CURRENT_PATH = os.path.dirname(__file__)
@@ -110,6 +110,7 @@ def test_comment_on_pr_with_repository_not_found(mocker):
     with pytest.raises(UnknownObjectException):
         main.comment_on_pr('')
 
+
 def test_comment_on_pr_with_pull_request_not_found(mocker):
     get_repo_mock = mocker.patch.object(Github, "get_repo", autospec=True)
     repo_mock = MagicMock(wrap=Repository.Repository)
@@ -122,6 +123,7 @@ def test_comment_on_pr_with_pull_request_not_found(mocker):
 
     with pytest.raises(UnknownObjectException):
         main.comment_on_pr('')
+
 
 def test_comment_on_pr(mocker):
     get_repo_mock = mocker.patch.object(Github, "get_repo", autospec=True)
