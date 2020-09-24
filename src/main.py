@@ -29,7 +29,14 @@ def format_feedback(flake8_report):
 
 
 def build_comment(feedback):
-    comment = '### Foram encontrados {} erros.\n'.format(feedback['count'])
+    if feedback['count'] == 0:
+        return '### Nenhum erro foi encontrado.\n'
+
+    msg = 'Foram encontrados {} erros'.format(feedback['count'])
+    if feedback['count'] == 1:
+        msg = 'Foi encontrado {} erro'.format(feedback['count'])
+    comment = '### {}.\n'.format(msg)
+
     for file in feedback['files']:
         comment += '\n#### Arquivo `{}`\n\n'.format(file)
         for error in feedback['files'][file]:
@@ -39,11 +46,11 @@ def build_comment(feedback):
 
 
 def comment_on_pr(comment):
-    github = Github(os.getenv('INPUT_TOKEN', ''))
-    repo = github.get_repo(os.getenv('GITHUB_REPOSITORY', ''))
-    pr = repo.get_pull(int(os.getenv('INPUT_PR_NUMBER', '')))
+    github = Github(os.getenv('INPUT_TOKEN'))
+    repo = github.get_repo(os.getenv('GITHUB_REPOSITORY'))
+    pull_request = repo.get_pull(int(os.getenv('INPUT_PR_NUMBER', '1')))
 
-    pr.create_issue_comment(comment)
+    pull_request.create_issue_comment(comment)
 
 
 if __name__ == "__main__":
