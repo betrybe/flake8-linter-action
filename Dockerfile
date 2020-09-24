@@ -8,8 +8,12 @@ RUN apk --update add python3 && \
     rm /var/cache/apk/*
 
 COPY entrypoint.sh /home/entrypoint.sh
-COPY src/evaluation.py /home/evaluation.py
+COPY src/ /home/
+COPY requirements.txt /home/requirements.txt
+COPY report.cfg /home/report.cfg
 
-RUN chmod a+x -R /home/entrypoint.sh /home/evaluation.py
+RUN python3 -m pip install -r /home/requirements.txt
+RUN chmod a+x -R /home/*.py
+RUN chmod a+x -R /home/entrypoint.sh
 
 ENTRYPOINT ["/home/entrypoint.sh"]

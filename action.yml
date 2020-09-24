@@ -1,15 +1,16 @@
 name: 'Flake8 Style Evaluator'
 description: 'Run Flake8 on project and comment on the student PR the errors'
 inputs:
-  repository-main-branch:
+  repository_main_branch:
     description: 'GitHub main branch to get the original tests and requirements.'
     default: 'master'
     required: true
   token:
     description: 'GitHub token to comment on PR.'
     required: true
+  pr_number:
+    description: 'Pull Request number that trigger build.'
+    required: true
 runs:
   using: 'docker'
   image: 'Dockerfile'
-  args:
-    - ${{ inputs.repository-main-branch }}
