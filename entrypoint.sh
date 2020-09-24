@@ -2,6 +2,7 @@
 set -x
 
 REPOSITORY_BRANCH=$1
+export GITHUB_TOKEN=$2
 
 git clone --single-branch --branch "$REPOSITORY_BRANCH" "https://github.com/$GITHUB_REPOSITORY.git" /github/main-branch/
 
