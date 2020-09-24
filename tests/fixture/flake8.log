@@ -1,0 +1,6 @@
+./python/scripts/githubsearch.py:4:1: F401 'json' imported but unused
+./python/scripts/githubsearch.py:12:1: E302 expected 2 blank lines, found 1
+./python/scripts/githubsearch.py:145:80: E501 line too long (88 > 79 characters)
+./python/scripts/githubsearch.py:161:9: E303 too many blank lines (2)
+./python/scripts/main.py:33:28: E711 comparison to None should be 'if cond is None:'
+./python/scripts/main.py:40:22: F841 local variable 'datetime_object' is assigned to but never used
