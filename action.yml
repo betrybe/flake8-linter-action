@@ -1,5 +1,5 @@
 name: 'Flake8 Style Evaluator'
-description: 'Run Flake8 over a project and comment on the student's PR the errors found.'
+description: 'Run Flake8 over a project and comment on the student PR the errors found.'
 inputs:
   repository_main_branch:
     description: 'GitHub main branch to get the original tests and requirements.'
