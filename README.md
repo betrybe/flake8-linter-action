@@ -63,14 +63,6 @@ jobs:
 
 ## Inputs
 
-### `repository_main_branch`
-
-**Required**
-
-**Default: `master`**
-
-GitHub main branch to get the original tests and requirements.s
-
 ### `token`
 
 **Required**
