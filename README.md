@@ -220,6 +220,8 @@ include-in-doctest =
 exclude-in-doctest =
 ```
 
+This example was get from the this [Gist](https://gist.github.com/krnd/1f3fb6c05af365977e486c47cb7b4a72#file-flake8).
+
 ## See more details and referentes
 
 - [Flake8 documentation v3.8.3](https://buildmedia.readthedocs.org/media/pdf/flake8/latest/flake8.pdf)
