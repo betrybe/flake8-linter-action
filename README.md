@@ -222,7 +222,7 @@ exclude-in-doctest =
 
 This example was get from the this [Gist](https://gist.github.com/krnd/1f3fb6c05af365977e486c47cb7b4a72#file-flake8).
 
-## See more details and referentes
+## See more details and references
 
 - [Flake8 documentation v3.8.3](https://buildmedia.readthedocs.org/media/pdf/flake8/latest/flake8.pdf)
 - [How to Use Flake8](https://simpleisbetterthancomplex.com/packages/2016/08/05/flake8.html)
