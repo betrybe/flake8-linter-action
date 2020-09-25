@@ -212,7 +212,7 @@ include-in-doctest =
 exclude-in-doctest =
 ```
 
-This example was get from the this [Gist](https://gist.github.com/krnd/1f3fb6c05af365977e486c47cb7b4a72#file-flake8).
+This example was get from this [Gist](https://gist.github.com/krnd/1f3fb6c05af365977e486c47cb7b4a72#file-flake8).
 
 ## See more details and references
 
