@@ -35,7 +35,7 @@ def build_comment(feedback):
 
     msg = 'Foram encontrados {} erros'.format(feedback['count'])
     if feedback['count'] == 1:
-        msg = 'Foi encontrado {} erro'.format(feedback['count'])
+        msg = 'Foi encontrado 1 erro'
     comment = '### {}.\n'.format(msg)
 
     for file in feedback['files']:
@@ -56,7 +56,7 @@ def comment_on_pr(comment):
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        raise ValueError('You must pass report and requirements files as argument!')
+        raise ValueError('You must pass report and requirements files as arguments!')
 
     feedback = format_feedback(sys.argv[1])
     comment = build_comment(feedback)

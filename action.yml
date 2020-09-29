@@ -1,5 +1,5 @@
 name: 'Flake8 Style Evaluator'
-description: 'Run Flake8 over a project and comment on the student PR the errors found.'
+description: 'Runs Flake8 over a project and comment on the student PR the errors found.'
 inputs:
   token:
     description: 'The GitHub token to use for making API requests.'

@@ -1,6 +1,6 @@
 # Flake8 Linter Action
 
-This action run Flake8 over a project and comment on PR the errors found.
+This action runs Flake8 over a project and comment on PR the errors found.
 
 ### Install dependencies
 
@@ -57,8 +57,6 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           pr_number: ${{ github.event.number }}
-
-
 ```
 
 ## Inputs
@@ -73,11 +71,11 @@ The GitHub token to use for making API requests.
 
 **Required**
 
-Pull Request number that trigger build.
+Pull Request number triggered the build.
 
 ## Configure rules and analysis via `setup.cfg`
 
-In order to configure the ESLint analysis for your project, you must create or modify the `setup.cfg` file at the root of your project.
+In order to configure the Flake8 analysis for your project, you must create or modify the `setup.cfg` file at the root of your project.
 
 Here follows an example for `setup.cfg`:
 
