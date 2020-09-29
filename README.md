@@ -71,7 +71,7 @@ The GitHub token to use for making API requests.
 
 **Required**
 
-Pull Request number triggered the build.
+Pull Request number that triggered the build.
 
 ## Configure rules and analysis via `setup.cfg`
 
