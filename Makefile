@@ -8,4 +8,4 @@ test:
 	python3 -m pytest -s
 
 build:
-	docker build . -t 'flake8_evaluator_action'
+	docker build . -t 'flake8_linter_action'

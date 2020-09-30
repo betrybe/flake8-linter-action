@@ -31,7 +31,7 @@ python3 -m flake8 --append-config=setup.cfg
 ```sh
 make build
 # or
-docker build . -t 'pytest_evaluator_action'
+docker build . -t 'flake8_linter_action'
 ```
 
 ## Evaluator Action
