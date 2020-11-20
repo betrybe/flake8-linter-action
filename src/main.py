@@ -8,8 +8,8 @@ def format_feedback(flake8_report):
     lines = flake8_report.readlines()
 
     files = {}
-    count = 0
-    w_count = 0
+    err_count = 0
+    warn_count = 0
     for line in lines:
         content = line.strip().split(":", 3)
         if len(content) < 4:
@@ -20,30 +20,40 @@ def format_feedback(flake8_report):
             files[filename] = []
 
         message = content[-1]
-        if message.lstrip().startswith("W"):
-            w_count += 1
-
         files[filename].append({
             'line': content[1],
             'message': message
         })
-        count += 1
+
+        if message.lstrip().startswith("W"):
+            warn_count += 1
+        else:
+            err_count += 1
 
     return {
-        'count': count,
-        'warning_count': w_count,
+        'error_count': err_count,
+        'warning_count': warn_count,
         'files': files,
     }
 
 
 def build_comment(feedback):
-    if feedback['count'] == 0:
-        return '### Nenhum erro foi encontrado.\n'
+    err_msg = 'Foram encontrados {} erros'.format(feedback['error_count'])
+    warn_msg = 'Foram encontrados {} avisos'.format(feedback['warning_count'])
+    if feedback['error_count'] == 1:
+        err_msg = 'Foi encontrado 1 erro'
+    if feedback['warning_count'] == 1:
+        warn_msg = 'Foi encontrado 1 aviso'
+    if feedback['error_count'] == 0:
+        err_msg = 'Nenhum erro foi encontrado'
+    if feedback['warning_count'] == 0:
+        warn_msg = 'Nenhum aviso foi encontrado'
 
-    msg = 'Foram encontrados {} erros'.format(feedback['count'])
-    if feedback['count'] == 1:
-        msg = 'Foi encontrado 1 erro'
-    comment = '### {}.\n'.format(msg)
+    comment = '### {}.\n'.format(err_msg)
+    comment += '### {}.\n'.format(warn_msg)
+
+    if len(feedback['files']) == 0:
+        return comment
 
     for file in feedback['files']:
         comment += '\n#### Arquivo `{}`\n\n'.format(file)
@@ -69,5 +79,5 @@ if __name__ == "__main__":
     comment = build_comment(feedback)
     comment_on_pr(comment)
 
-    if feedback['count'] - feedback['warning_count'] > 0:
+    if feedback['error_count'] > 0:
         raise ValueError()

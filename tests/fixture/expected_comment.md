@@ -1,4 +1,5 @@
-### Foram encontrados 8 erros.
+### Foram encontrados 6 erros.
+### Foram encontrados 2 avisos.
 
 #### Arquivo `./python/scripts/githubsearch.py`
 

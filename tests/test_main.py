@@ -13,8 +13,9 @@ def test_format_feedback():
     mock_report = os.path.join(CURRENT_PATH, 'fixture', 'flake8.log')
 
     feedback = main.format_feedback(mock_report)
-    assert 'count' in feedback
-    assert feedback['count'] == 8
+    assert 'error_count' in feedback
+    assert 'warning_count' in feedback
+    assert feedback['error_count'] == 6
     assert feedback['warning_count'] == 2
     assert 'files' in feedback
     assert './python/scripts/githubsearch.py' in feedback['files']
@@ -51,8 +52,10 @@ def test_format_feedback_with_invalid_file():
     mock_report = os.path.join(CURRENT_PATH, 'fixture', 'expected_comment.md')
     feedback = main.format_feedback(mock_report)
 
-    assert 'count' in feedback
-    assert feedback['count'] == 0
+    assert 'error_count' in feedback
+    assert feedback['error_count'] == 0
+    assert 'warning_count' in feedback
+    assert feedback['warning_count'] == 0
     assert 'files' in feedback
     assert len(feedback['files']) == 0
 
@@ -65,8 +68,10 @@ def test_format_feedback_with_empty_file():
 
     feedback = main.format_feedback(empty_file)
 
-    assert 'count' in feedback
-    assert feedback['count'] == 0
+    assert 'error_count' in feedback
+    assert feedback['error_count'] == 0
+    assert 'warning_count' in feedback
+    assert feedback['warning_count'] == 0
     assert 'files' in feedback
     assert len(feedback['files']) == 0
 
@@ -83,29 +88,51 @@ def test_build_comment_with_errors_found():
     assert comment == comment_expected
 
 
-def test_build_comment_with_0_errors_found():
+def test_build_comment_with_0_errors_0_warnings_found():
     feedback = {
-        'count': 0,
+        'error_count': 0,
+        'warning_count': 0,
         'files': {}
     }
     comment = main.build_comment(feedback)
-    assert comment == '### Nenhum erro foi encontrado.\n'
+    expected = '### Nenhum erro foi encontrado.\n'
+    expected += '### Nenhum aviso foi encontrado.\n'
+    assert comment == expected
 
 
-def test_build_comment_with_1_error_found():
+def test_build_comment_with_1_error_0_warning_found():
     feedback = {
-        'count': 1,
+        'error_count': 1,
+        'warning_count': 0,
         'files': {
             './src/main.py': [
                 {
                     'line': '66',
-                    'message': 'Lorem ipsum'
+                    'message': 'E000 Lorem ipsum'
                 }
             ]
         }
     }
     comment = main.build_comment(feedback)
     assert '### Foi encontrado 1 erro.\n' in comment
+    assert '### Nenhum aviso foi encontrado.\n' in comment
+
+def test_build_comment_with_0_error_1_warning_found():
+    feedback = {
+        'error_count': 0,
+        'warning_count': 1,
+        'files': {
+            './src/main.py': [
+                {
+                    'line': '66',
+                    'message': 'W000 Lorem ipsum'
+                }
+            ]
+        }
+    }
+    comment = main.build_comment(feedback)
+    assert '### Nenhum erro foi encontrado.\n' in comment
+    assert '### Foi encontrado 1 aviso.\n' in comment
 
 
 def test_comment_on_pr_with_repository_not_found(mocker):
