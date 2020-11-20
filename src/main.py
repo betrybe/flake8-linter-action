@@ -61,3 +61,6 @@ if __name__ == "__main__":
     feedback = format_feedback(sys.argv[1])
     comment = build_comment(feedback)
     comment_on_pr(comment)
+
+    if feedback['count'] > 0:
+        raise ValueError()

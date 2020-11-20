@@ -10,10 +10,10 @@ else
 fi
 python3 -m flake8 --append-config=setup.cfg --append-config=/home/report.cfg > /tmp/flake8.log
 
+# Get the report and comment on PR
+python3 /home/main.py /tmp/flake8.log
+
 if [ $? != 0 ]; then
   printf "Execution error $?"
   exit 1
 fi
-
-# Get the report and comment on PR
-python3 /home/main.py /tmp/flake8.log
