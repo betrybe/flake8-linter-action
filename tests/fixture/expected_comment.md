@@ -1,4 +1,4 @@
-### Foram encontrados 6 erros.
+### Foram encontrados 8 erros.
 
 #### Arquivo `./python/scripts/githubsearch.py`
 
@@ -11,3 +11,5 @@
 
 - Linha **33**: E711 comparison to None should be 'if cond is None:'
 - Linha **40**: F841 local variable 'datetime_object' is assigned to but never used
+- Linha **48**: W292 no newline at end of file
+- Linha **52**: W291 trailing whitespace

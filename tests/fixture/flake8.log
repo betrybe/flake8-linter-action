@@ -4,3 +4,5 @@
 ./python/scripts/githubsearch.py:161:9: E303 too many blank lines (2)
 ./python/scripts/main.py:33:28: E711 comparison to None should be 'if cond is None:'
 ./python/scripts/main.py:40:22: F841 local variable 'datetime_object' is assigned to but never used
+./python/scripts/main.py:48:0: W292 no newline at end of file
+./python/scripts/main.py:52:13: W291 trailing whitespace

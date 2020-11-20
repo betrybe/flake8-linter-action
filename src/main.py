@@ -9,6 +9,7 @@ def format_feedback(flake8_report):
 
     files = {}
     count = 0
+    w_count = 0
     for line in lines:
         content = line.strip().split(":", 3)
         if len(content) < 4:
@@ -17,14 +18,20 @@ def format_feedback(flake8_report):
         filename = content[0]
         if filename not in files:
             files[filename] = []
+
+        message = content[-1]
+        if message.lstrip().startswith("W"):
+            w_count += 1
+
         files[filename].append({
             'line': content[1],
-            'message': content[-1]
+            'message': message
         })
         count += 1
 
     return {
         'count': count,
+        'warning_count': w_count,
         'files': files,
     }
 
@@ -62,5 +69,5 @@ if __name__ == "__main__":
     comment = build_comment(feedback)
     comment_on_pr(comment)
 
-    if feedback['count'] > 0:
+    if feedback['count'] - feedback['warning_count'] > 0:
         raise ValueError()

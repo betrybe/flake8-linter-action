@@ -14,7 +14,8 @@ def test_format_feedback():
 
     feedback = main.format_feedback(mock_report)
     assert 'count' in feedback
-    assert feedback['count'] == 6
+    assert feedback['count'] == 8
+    assert feedback['warning_count'] == 2
     assert 'files' in feedback
     assert './python/scripts/githubsearch.py' in feedback['files']
     file_errors = feedback['files']['./python/scripts/githubsearch.py']
@@ -29,11 +30,15 @@ def test_format_feedback():
     assert file_errors[3]['message'] == ' E303 too many blank lines (2)'
     assert './python/scripts/main.py' in feedback['files']
     file_errors = feedback['files']['./python/scripts/main.py']
-    assert len(file_errors) == 2
+    assert len(file_errors) == 4
     assert file_errors[0]['line'] == '33'
     assert file_errors[0]['message'] == ' E711 comparison to None should be \'if cond is None:\''
     assert file_errors[1]['line'] == '40'
     assert file_errors[1]['message'] == ' F841 local variable \'datetime_object\' is assigned to but never used'
+    assert file_errors[2]['line'] == '48'
+    assert file_errors[2]['message'] == ' W292 no newline at end of file'
+    assert file_errors[3]['line'] == '52'
+    assert file_errors[3]['message'] == ' W291 trailing whitespace'
 
 
 def test_format_feedback_with_file_not_found():
