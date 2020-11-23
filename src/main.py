@@ -82,5 +82,5 @@ if __name__ == "__main__":
     comment = build_comment(feedback)
     comment_on_pr(comment)
 
-    if len(feedback['error']) > 0:
+    if feedback['error']['count'] > 0:
         raise ValueError()
