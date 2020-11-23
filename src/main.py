@@ -7,58 +7,61 @@ def format_feedback(flake8_report):
     flake8_report = open(flake8_report, 'r')
     lines = flake8_report.readlines()
 
-    files = {}
-    err_count = 0
-    warn_count = 0
+    files = {
+        'error': {
+            'files': {},
+            'count': 0
+        },
+        'warning': {
+            'files': {},
+            'count': 0
+        },
+    }
     for line in lines:
         content = line.strip().split(":", 3)
         if len(content) < 4:
             continue
 
         filename = content[0]
-        if filename not in files:
-            files[filename] = []
-
         message = content[-1]
-        files[filename].append({
+        file_msg = {
             'line': content[1],
             'message': message
-        })
-
+        }
+        group = 'error'
         if message.lstrip().startswith("W"):
-            warn_count += 1
-        else:
-            err_count += 1
+            group = 'warning'
 
-    return {
-        'error_count': err_count,
-        'warning_count': warn_count,
-        'files': files,
-    }
+        if filename not in files[group]['files']:
+            files[group]['files'][filename] = []
+
+        files[group]['files'][filename].append(file_msg)
+        files[group]['count'] += 1
+
+    return files
 
 
 def build_comment(feedback):
-    err_msg = 'Foram encontrados {} erros'.format(feedback['error_count'])
-    warn_msg = 'Foram encontrados {} avisos'.format(feedback['warning_count'])
-    if feedback['error_count'] == 1:
-        err_msg = 'Foi encontrado 1 erro'
-    if feedback['warning_count'] == 1:
-        warn_msg = 'Foi encontrado 1 aviso'
-    if feedback['error_count'] == 0:
-        err_msg = 'Nenhum erro foi encontrado'
-    if feedback['warning_count'] == 0:
-        warn_msg = 'Nenhum aviso foi encontrado'
+    comment = ''
+    for group in feedback:
+        label = 'erro'
+        if group == 'warning':
+            label = 'aviso'
+        msg = 'Foram encontrados {} {}s'.format(feedback[group]['count'], label)
+        if feedback[group]['count'] == 1:
+            msg = 'Foi encontrado 1 {}'.format(label)
+        if feedback[group]['count'] == 0:
+            msg = 'Nenhum {} foi encontrado'.format(label)
 
-    comment = '### {}.\n'.format(err_msg)
-    comment += '### {}.\n'.format(warn_msg)
+        comment += '### {}.\n'.format(msg)
+        if feedback[group]['count'] == 0:
+            continue
 
-    if len(feedback['files']) == 0:
-        return comment
-
-    for file in feedback['files']:
-        comment += '\n#### Arquivo `{}`\n\n'.format(file)
-        for error in feedback['files'][file]:
-            comment += '- Linha **{}**:{}\n'.format(error['line'], error['message'])
+        for file in feedback[group]['files']:
+            comment += '\n#### Arquivo `{}`\n\n'.format(file)
+            for error in feedback[group]['files'][file]:
+                comment += '- Linha **{}**:{}\n'.format(error['line'], error['message'])
+        comment += '\n'
 
     return comment
 
@@ -79,5 +82,5 @@ if __name__ == "__main__":
     comment = build_comment(feedback)
     comment_on_pr(comment)
 
-    if feedback['error_count'] > 0:
+    if len(feedback['error']) > 0:
         raise ValueError()

@@ -1,6 +1,7 @@
 import os
 import tempfile
 import pytest
+import json
 from unittest.mock import MagicMock
 from src import main
 from github.GithubException import UnknownObjectException
@@ -13,13 +14,12 @@ def test_format_feedback():
     mock_report = os.path.join(CURRENT_PATH, 'fixture', 'flake8.log')
 
     feedback = main.format_feedback(mock_report)
-    assert 'error_count' in feedback
-    assert 'warning_count' in feedback
-    assert feedback['error_count'] == 6
-    assert feedback['warning_count'] == 2
-    assert 'files' in feedback
-    assert './python/scripts/githubsearch.py' in feedback['files']
-    file_errors = feedback['files']['./python/scripts/githubsearch.py']
+    assert 'error' in feedback
+    assert 'warning' in feedback
+    assert feedback['error']['count'] == 6
+    assert feedback['warning']['count'] == 2
+    assert './python/scripts/githubsearch.py' in feedback['error']['files']
+    file_errors = feedback['error']['files']['./python/scripts/githubsearch.py']
     assert len(file_errors) == 4
     assert file_errors[0]['line'] == '4'
     assert file_errors[0]['message'] == ' F401 \'json\' imported but unused'
@@ -29,17 +29,20 @@ def test_format_feedback():
     assert file_errors[2]['message'] == ' E501 line too long (88 > 79 characters)'
     assert file_errors[3]['line'] == '161'
     assert file_errors[3]['message'] == ' E303 too many blank lines (2)'
-    assert './python/scripts/main.py' in feedback['files']
-    file_errors = feedback['files']['./python/scripts/main.py']
-    assert len(file_errors) == 4
+    assert './python/scripts/main.py' in feedback['error']['files']
+    file_errors = feedback['error']['files']['./python/scripts/main.py']
+    assert len(file_errors) == 2
     assert file_errors[0]['line'] == '33'
     assert file_errors[0]['message'] == ' E711 comparison to None should be \'if cond is None:\''
     assert file_errors[1]['line'] == '40'
     assert file_errors[1]['message'] == ' F841 local variable \'datetime_object\' is assigned to but never used'
-    assert file_errors[2]['line'] == '48'
-    assert file_errors[2]['message'] == ' W292 no newline at end of file'
-    assert file_errors[3]['line'] == '52'
-    assert file_errors[3]['message'] == ' W291 trailing whitespace'
+    assert './python/scripts/main.py' in feedback['warning']['files']
+    file_warnings = feedback['warning']['files']['./python/scripts/main.py']
+    assert len(file_warnings) == 2
+    assert file_warnings[0]['line'] == '48'
+    assert file_warnings[0]['message'] == ' W292 no newline at end of file'
+    assert file_warnings[1]['line'] == '52'
+    assert file_warnings[1]['message'] == ' W291 trailing whitespace'
 
 
 def test_format_feedback_with_file_not_found():
@@ -52,12 +55,12 @@ def test_format_feedback_with_invalid_file():
     mock_report = os.path.join(CURRENT_PATH, 'fixture', 'expected_comment.md')
     feedback = main.format_feedback(mock_report)
 
-    assert 'error_count' in feedback
-    assert feedback['error_count'] == 0
-    assert 'warning_count' in feedback
-    assert feedback['warning_count'] == 0
-    assert 'files' in feedback
-    assert len(feedback['files']) == 0
+    assert 'error' in feedback
+    assert feedback['error']['count'] == 0
+    assert len(feedback['error']['files']) == 0
+    assert 'warning' in feedback
+    assert feedback['warning']['count'] == 0
+    assert len(feedback['warning']['files']) == 0
 
 
 def test_format_feedback_with_empty_file():
@@ -68,15 +71,15 @@ def test_format_feedback_with_empty_file():
 
     feedback = main.format_feedback(empty_file)
 
-    assert 'error_count' in feedback
-    assert feedback['error_count'] == 0
-    assert 'warning_count' in feedback
-    assert feedback['warning_count'] == 0
-    assert 'files' in feedback
-    assert len(feedback['files']) == 0
+    assert 'error' in feedback
+    assert feedback['error']['count'] == 0
+    assert len(feedback['error']['files']) == 0
+    assert 'warning' in feedback
+    assert feedback['warning']['count'] == 0
+    assert len(feedback['warning']['files']) == 0
 
 
-def test_build_comment_with_errors_found():
+def test_build_comment_with_errors_and_warnings():
     mock_comment = os.path.join(CURRENT_PATH, 'fixture', 'expected_comment.md')
     fp = open(mock_comment, "r")
     comment_expected = fp.read()
@@ -90,9 +93,14 @@ def test_build_comment_with_errors_found():
 
 def test_build_comment_with_0_errors_0_warnings_found():
     feedback = {
-        'error_count': 0,
-        'warning_count': 0,
-        'files': {}
+        'error': {
+            'files': {},
+            'count': 0
+        },
+        'warning': {
+            'files': {},
+            'count': 0
+        },
     }
     comment = main.build_comment(feedback)
     expected = '### Nenhum erro foi encontrado.\n'
@@ -102,33 +110,44 @@ def test_build_comment_with_0_errors_0_warnings_found():
 
 def test_build_comment_with_1_error_0_warning_found():
     feedback = {
-        'error_count': 1,
-        'warning_count': 0,
-        'files': {
-            './src/main.py': [
-                {
-                    'line': '66',
-                    'message': 'E000 Lorem ipsum'
-                }
-            ]
-        }
+        'error': {
+            'files': {
+                './src/main.py': [
+                    {
+                        'line': '66',
+                        'message': 'E000 Lorem ipsum'
+                    }
+                ]
+            },
+            'count': 1
+        },
+        'warning': {
+            'files': {},
+            'count': 0
+        },
     }
+
     comment = main.build_comment(feedback)
     assert '### Foi encontrado 1 erro.\n' in comment
     assert '### Nenhum aviso foi encontrado.\n' in comment
 
 def test_build_comment_with_0_error_1_warning_found():
     feedback = {
-        'error_count': 0,
-        'warning_count': 1,
-        'files': {
-            './src/main.py': [
-                {
-                    'line': '66',
-                    'message': 'W000 Lorem ipsum'
-                }
-            ]
-        }
+        'error': {
+            'files': {},
+            'count': 0
+        },
+        'warning': {
+            'files': {
+                './src/main.py': [
+                    {
+                        'line': '66',
+                        'message': 'E000 Lorem ipsum'
+                    }
+                ]
+            },
+            'count': 1
+        },
     }
     comment = main.build_comment(feedback)
     assert '### Nenhum erro foi encontrado.\n' in comment
