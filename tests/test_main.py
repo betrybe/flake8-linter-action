@@ -1,7 +1,6 @@
 import os
 import tempfile
 import pytest
-import json
 from unittest.mock import MagicMock
 from src import main
 from github.GithubException import UnknownObjectException
@@ -130,6 +129,7 @@ def test_build_comment_with_1_error_0_warning_found():
     comment = main.build_comment(feedback)
     assert '### Foi encontrado 1 erro.\n' in comment
     assert '### Nenhum aviso foi encontrado.\n' in comment
+
 
 def test_build_comment_with_0_error_1_warning_found():
     feedback = {
