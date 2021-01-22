@@ -56,7 +56,7 @@ jobs:
         id: flake8_linter
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          pr_number: ${{ github.event.number }}
+          pr_number: ${{ github.event.inputs.pr_number }}
 ```
 
 ## Inputs
