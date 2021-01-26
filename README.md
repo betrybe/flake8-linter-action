@@ -42,8 +42,20 @@ Check the latest release [here](https://github.com/betrybe/flake8-linter-action/
 
 ```yml
 on:
-  pull_request:
-    types: [opened, synchronize]
+  workflow_dispatch:
+    inputs:
+      dispatch_token:
+        description: 'Token that authorize the dispatch'
+        required: true
+      head_sha:
+        description: 'Head commit SHA that dispatched the workflow'
+        required: true
+      pr_author_username:
+        description: 'Pull Request author username'
+        required: true
+      pr_number:
+        description: 'Pull Request number that dispatched the workflow'
+        required: true
 
 jobs:
   evaluator_job:
@@ -61,17 +73,17 @@ jobs:
 
 ## Inputs
 
-### `token`
+- `token`
 
-**Required**
+  **Required**
 
-The GitHub token to use for making API requests.
+  The GitHub token to use for making API requests.
 
-### `pr_number`
+- `pr_number`
 
-**Required**
+  **Required**
 
-Pull Request number that triggered the build.
+  Pull Request number that triggered the build.
 
 ## Configure rules and analysis via `setup.cfg`
 
