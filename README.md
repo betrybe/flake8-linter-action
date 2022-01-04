@@ -26,14 +26,6 @@ make flake8
 python3 -m flake8 --append-config=setup.cfg
 ```
 
-### Build docker image
-
-```sh
-make build
-# or
-docker build . -t 'flake8_linter_action'
-```
-
 ## Evaluator Action
 
 To call the evaluator action you must create `.github/workflows/main.yml` in the project repo with the release version.
@@ -228,4 +220,3 @@ This example was got from this [Gist](https://gist.github.com/krnd/1f3fb6c05af36
 
 - [Flake8 documentation v3.8.3](https://buildmedia.readthedocs.org/media/pdf/flake8/latest/flake8.pdf)
 - [How to Use Flake8](https://simpleisbetterthancomplex.com/packages/2016/08/05/flake8.html)
-- [Learn more about Github Actions](https://help.github.com/en/actions/automating-your-workflow-with-github-actions/creating-a-docker-container-action)

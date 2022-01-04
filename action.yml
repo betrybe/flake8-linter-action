@@ -8,5 +8,20 @@ inputs:
     description: 'Pull Request number that trigger build.'
     required: true
 runs:
-  using: 'docker'
-  image: 'Dockerfile'
+  using: 'composite'
+  steps:
+    - id: run_flake8
+      shell: bash
+      run: ${{ github.action_path }}/lint.sh
+
+    - id: setup_evaluator
+      shell: bash
+      run: python3 -m pip install -r ${{ github.action_path }}/requirements.txt
+
+    - id: comment_on_pr
+      shell: bash
+      run: python3 ${{ github.action_path }}/src/main.py /tmp/flake8.log
+      env:
+        INPUT_TOKEN: ${{ inputs.token }}
+        GITHUB_REPOSITORY: ${{ github.repository }}
+        INPUT_PR_NUMBER: ${{ inputs.pr_number }}

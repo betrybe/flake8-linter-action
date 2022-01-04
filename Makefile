@@ -6,6 +6,3 @@ flake8:
 
 test:
 	python3 -m pytest -s
-
-build:
-	docker build . -t 'flake8_linter_action'
