@@ -71,6 +71,7 @@ def comment_on_pr(comment):
     repo = github.get_repo(os.getenv('GITHUB_REPOSITORY'))
     pull_request = repo.get_pull(int(os.getenv('INPUT_PR_NUMBER', '1')))
 
+    print(comment)
     pull_request.create_issue_comment(comment)
 
 
