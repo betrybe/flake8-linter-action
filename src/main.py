@@ -69,6 +69,7 @@ def build_comment(feedback):
 def comment_on_pr(comment):
     github = Github(os.getenv('INPUT_TOKEN'))
     repo = github.get_repo(os.getenv('GITHUB_REPOSITORY'))
+    print('PR:', os.getenv('INPUT_PR_NUMBER', '1'))
     pull_request = repo.get_pull(int(os.getenv('INPUT_PR_NUMBER', '1')))
 
     print(comment)
