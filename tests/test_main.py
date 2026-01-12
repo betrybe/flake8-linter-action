@@ -156,7 +156,7 @@ def test_build_comment_with_0_error_1_warning_found():
 
 def test_comment_on_pr_with_repository_not_found(mocker):
     get_repo_mock = mocker.patch.object(Github, "get_repo", autospec=True)
-    get_repo_mock.side_effect = UnknownObjectException(mocker.Mock(status=404), 'not found')
+    get_repo_mock.side_effect = UnknownObjectException(mocker.Mock(status=404), 'not found', [])
 
     with pytest.raises(UnknownObjectException):
         main.comment_on_pr('')
@@ -167,10 +167,12 @@ def test_comment_on_pr_with_pull_request_not_found(mocker):
     repo_mock = MagicMock(wrap=Repository.Repository)
     repo_mock.owner = 'org'
     repo_mock.repo = 'trybe'
-    get_repo_mock.return_value = repo_mock
+    repo_mock.get_pull = MagicMock(
+        autospec=True,
+        side_effect=UnknownObjectException(mocker.Mock(status=404), 'not found', [])
+    )
 
-    get_pull_mock = mocker.patch.object(repo_mock, "get_pull", autospec=True)
-    get_pull_mock.side_effect = UnknownObjectException(mocker.Mock(status=404), 'not found')
+    get_repo_mock.return_value = repo_mock
 
     with pytest.raises(UnknownObjectException):
         main.comment_on_pr('')
@@ -181,11 +183,10 @@ def test_comment_on_pr(mocker):
     repo_mock = MagicMock(wrap=Repository.Repository)
     repo_mock.owner = 'betrybe'
     repo_mock.repo = 'flake8-linter'
-    get_repo_mock.return_value = repo_mock
-
-    get_pull_mock = mocker.patch.object(repo_mock, "get_pull", autospec=True)
     pr_mock = MagicMock(wrap=PullRequest.PullRequest)
-    get_pull_mock.return_value = pr_mock
+    repo_mock.get_pull = MagicMock(autospec=True, return_value=pr_mock)
+
+    get_repo_mock.return_value = repo_mock
 
     main.comment_on_pr('### Lorem')
 
